@@ -1,13 +1,49 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable jsx-a11y/control-has-associated-label */
-import React from 'react';
+/* eslint-disable */
+
+import React, {useState, useEffect} from 'react';
 import { UserWarning } from './UserWarning';
-import { USER_ID } from './api/todos';
+import * as clientMethods from './api/todos';
+import type { Todo } from './types/Todo'
+import { NewTodoForm } from './components/NewTodoForm';
 
 export const App: React.FC = () => {
-  if (!USER_ID) {
+  if (!clientMethods.USER_ID) {
     return <UserWarning />;
   }
+
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [errorStatus, setErrorStatus] = useState(true);
+  const [title, setTitle] = useState('');
+  const [isTitleChanged, setIsTitleChanged] = useState(false);
+  const [newTodo, setNewTodo] = useState<Todo>();
+
+  const handleAddTodo = (newTodo : Todo) : void => {
+    setTodos([...todos, newTodo]);
+  }
+
+  useEffect(() => {
+    const loadTodos = async () => {
+      try {
+        const loadedTodos = await clientMethods.getTodos();
+
+        setTodos(loadedTodos);
+      } catch (err) {
+        setError('Faild to load todos');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadTodos();
+
+  }, []);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+
+  const allTodosCompleted = todos.length > 0 && todos.every(todo => todo.completed);
 
   return (
     <div className="todoapp">
@@ -16,21 +52,20 @@ export const App: React.FC = () => {
       <div className="todoapp__content">
         <header className="todoapp__header">
           {/* this button should have `active` class only if all todos are completed */}
-          <button
-            type="button"
-            className="todoapp__toggle-all active"
-            data-cy="ToggleAllButton"
-          />
+          {todos.length > 0 &&
+            <button
+              type="button"
+              className={`todoapp__toggle-all ${allTodosCompleted ? 'active' : ''}`}
+              data-cy="ToggleAllButton"
+            />
+          }
 
           {/* Add a todo on form submit */}
-          <form>
-            <input
-              data-cy="NewTodoField"
-              type="text"
-              className="todoapp__new-todo"
-              placeholder="What needs to be done?"
-            />
-          </form>
+          <NewTodoForm
+            onAdd={handleAddTodo}
+            onError={setError}
+          >
+          </NewTodoForm>
         </header>
 
         <section className="todoapp__main" data-cy="TodoList">
