@@ -15,7 +15,6 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [errorStatus, setErrorStatus] = useState(true);
-  const [title, setTitle] = useState('');
   const [isTitleChanged, setIsTitleChanged] = useState(false);
   const [newTodo, setNewTodo] = useState<Todo>();
 
