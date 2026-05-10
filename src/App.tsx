@@ -5,6 +5,7 @@ import { UserWarning } from './UserWarning';
 import * as clientMethods from './api/todos';
 import type { Todo } from './types/Todo'
 import { NewTodoForm } from './components/NewTodoForm';
+import { TodoList } from './components/TodoList';
 
 export const App: React.FC = () => {
   if (!clientMethods.USER_ID) {
@@ -14,9 +15,6 @@ export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  const [errorStatus, setErrorStatus] = useState(true);
-  const [isTitleChanged, setIsTitleChanged] = useState(false);
-  const [newTodo, setNewTodo] = useState<Todo>();
 
   const handleAddTodo = (newTodo : Todo) : void => {
     setTodos([...todos, newTodo]);
@@ -68,7 +66,11 @@ export const App: React.FC = () => {
         </header>
 
         <section className="todoapp__main" data-cy="TodoList">
-          {/* This is a completed todo */}
+          {/* This is a completed todo//////////////////////////////////////////////////////////////////// */}
+          <TodoList
+            todos={todos}
+          />
+
           <div data-cy="Todo" className="todo completed">
             <label className="todo__status-label">
               <input
@@ -145,7 +147,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {/* This todo is in loadind state */}
+          {/* This todo is in loading state */}
           <div data-cy="Todo" className="todo">
             <label className="todo__status-label">
               <input
