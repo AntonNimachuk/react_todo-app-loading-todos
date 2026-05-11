@@ -1,6 +1,5 @@
 /* eslint-disable */
 
-import React, { useState } from 'react';
 import { TodoItem } from '../TodoItem'
 import type { Todo } from '../../types/Todo';
 

@@ -23,7 +23,7 @@ export const NewTodoForm: React.FC<Props> = ({onAdd, onError}) => {
   };
 
   return(
-    <form>
+    <form onSubmit={handleSubmit}>
       <input
         data-cy="NewTodoField"
         type="text"
