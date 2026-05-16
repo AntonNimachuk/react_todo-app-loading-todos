@@ -6,9 +6,10 @@ import type { Todo } from '../../types/Todo';
 type Props = {
   onAdd : (value : Todo) => void;
   onError : (message : string) => void;
+  isLoading : boolean;
 }
 
-export const NewTodoForm: React.FC<Props> = ({onAdd, onError}) => {
+export const NewTodoForm: React.FC<Props> = ({onAdd, onError, isLoading}) => {
   const [title, setTitle] = useState('');
 
   const handleSubmit = async(event: React.FormEvent) => {
@@ -31,6 +32,7 @@ export const NewTodoForm: React.FC<Props> = ({onAdd, onError}) => {
         placeholder="What needs to be done?"
         value={title}
         onChange={event => setTitle(event.target.value)}
+        disabled={isLoading}
       />
     </form>
   );
