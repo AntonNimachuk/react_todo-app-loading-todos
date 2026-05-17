@@ -20,9 +20,9 @@ export const App: React.FC = () => {
   const [selectedFilterLink, setSelectedFilterLink] = useState(FilterType.All);
 
   const filterLinks = [
-    { label: 'All', value: FilterType.All, dataCy: 'FilterLinkAll' },
-    { label: 'Active', value: FilterType.Active, dataCy: 'FilterLinkActive' },
-    { label: 'Completed', value: FilterType.Completed, dataCy: 'FilterLinkCompleted' },
+    { label: 'All', value: FilterType.All, href: '#/', dataCy: 'FilterLinkAll' },
+    { label: 'Active', value: FilterType.Active, href: '#/active', dataCy: 'FilterLinkActive' },
+    { label: 'Completed', value: FilterType.Completed, href: '#/completed', dataCy: 'FilterLinkCompleted' },
   ];
 
   const handleAddTodo = (newTodo : Todo) : void => {
@@ -58,10 +58,10 @@ export const App: React.FC = () => {
   let filteredTodos = todos;
 
   switch (selectedFilterLink) {
-    case 'active':
+    case FilterType.Active:
       filteredTodos = todos.filter(todo => !todo.completed);
       break;
-    case 'completed':
+    case FilterType.Completed:
       filteredTodos = todos.filter(todo => todo.completed);
       break;
     default :
@@ -120,33 +120,6 @@ export const App: React.FC = () => {
                 {link.label}
               </a>
             ))}
-          
-            <a
-              href="#/"
-              className={`filter__link ${selectedFilterLink === 'all' ? 'selected' : ''}`}
-              data-cy="FilterLinkAll"
-              onClick={() => setSelectedFilterLink(FilterType.All)}
-            >
-              All
-            </a>
-
-            <a
-              href="#/active"
-              className={`filter__link ${selectedFilterLink === 'active' ? 'selected' : ''}`}
-              data-cy="FilterLinkActive"
-              onClick={() => setSelectedFilterLink(FilterType.Active)}
-            >
-              Active
-            </a>
-
-            <a
-              href="#/completed"
-              className={`filter__link ${selectedFilterLink === 'completed' ? 'selected' : ''}`}
-              data-cy="FilterLinkCompleted"
-              onClick={() => setSelectedFilterLink(FilterType.Completed)}
-            >
-              Completed
-            </a>
           </nav>
 
           {/* this button should be disabled if there are no completed todos */}
