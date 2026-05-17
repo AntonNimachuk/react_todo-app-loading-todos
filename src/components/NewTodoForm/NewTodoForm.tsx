@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react';
 import type { Todo } from '../../types/Todo';
+import { ErrorType } from '../../types/ErrorType';
 
 type Props = {
   onAdd : (value : Todo) => void;
-  onError : (message : string) => void;
+  onError : (message : ErrorType) => void;
   isLoading : boolean;
 }
 
@@ -16,11 +17,11 @@ export const NewTodoForm: React.FC<Props> = ({onAdd, onError, isLoading}) => {
     event.preventDefault();
     // 1. Validate
     if (!title.trim()) {
-      onError('Title should not be empty');
+      onError(ErrorType.EmptyTitle);
       return;
     }
     // 2. Clear previous error
-    onError('');
+    onError(ErrorType.None);
   };
 
   return(

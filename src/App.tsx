@@ -6,6 +6,8 @@ import * as clientMethods from './api/todos';
 import type { Todo } from './types/Todo'
 import { NewTodoForm } from './components/NewTodoForm';
 import { TodoList } from './components/TodoList';
+import { ErrorType } from './types/ErrorType';
+import { FilterType } from './types/FilterType';
 
 export const App: React.FC = () => {
   if (!clientMethods.USER_ID) {
@@ -14,8 +16,14 @@ export const App: React.FC = () => {
 
   const [todos, setTodos] = useState<Todo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [selectedFilterLink, setSelectedFilterLink] = useState('all');
+  const [error, setError] = useState(ErrorType.None);
+  const [selectedFilterLink, setSelectedFilterLink] = useState(FilterType.All);
+
+  const filterLinks = [
+    { label: 'All', value: FilterType.All, dataCy: 'FilterLinkAll' },
+    { label: 'Active', value: FilterType.Active, dataCy: 'FilterLinkActive' },
+    { label: 'Completed', value: FilterType.Completed, dataCy: 'FilterLinkCompleted' },
+  ];
 
   const handleAddTodo = (newTodo : Todo) : void => {
     setTodos([...todos, newTodo]);
@@ -28,7 +36,7 @@ export const App: React.FC = () => {
 
         setTodos(loadedTodos);
       } catch (err) {
-        setError('Unable to load todos');
+        setError(ErrorType.Load);
       } finally {
         setIsLoading(false);
       }
@@ -42,7 +50,7 @@ export const App: React.FC = () => {
     if (!error) {
       return;
     }
-    const timer = setTimeout(() => setError(''), 3000);
+    const timer = setTimeout(() => setError(ErrorType.None), 3000);
     return () => clearTimeout(timer);
   }, [error]);
 
@@ -101,11 +109,23 @@ export const App: React.FC = () => {
 
           {/* Active link should have the 'selected' class */}
           <nav className="filter" data-cy="Filter">
+            {filterLinks.map(link => (
+              <a 
+                key={link.value}
+                href={link.href}
+                className={`filter__link ${selectedFilterLink === link.value ? 'selected' : ''}`}
+                data-cy={link.dataCy}
+                onClick={() => setSelectedFilterLink(link.value)}
+              >
+                {link.label}
+              </a>
+            ))}
+          
             <a
               href="#/"
               className={`filter__link ${selectedFilterLink === 'all' ? 'selected' : ''}`}
               data-cy="FilterLinkAll"
-              onClick={() => setSelectedFilterLink('all')}
+              onClick={() => setSelectedFilterLink(FilterType.All)}
             >
               All
             </a>
@@ -114,7 +134,7 @@ export const App: React.FC = () => {
               href="#/active"
               className={`filter__link ${selectedFilterLink === 'active' ? 'selected' : ''}`}
               data-cy="FilterLinkActive"
-              onClick={() => setSelectedFilterLink('active')}
+              onClick={() => setSelectedFilterLink(FilterType.Active)}
             >
               Active
             </a>
@@ -123,7 +143,7 @@ export const App: React.FC = () => {
               href="#/completed"
               className={`filter__link ${selectedFilterLink === 'completed' ? 'selected' : ''}`}
               data-cy="FilterLinkCompleted"
-              onClick={() => setSelectedFilterLink('completed')}
+              onClick={() => setSelectedFilterLink(FilterType.Completed)}
             >
               Completed
             </a>
@@ -153,7 +173,7 @@ export const App: React.FC = () => {
           data-cy="HideErrorButton"
           type="button"
           className="delete"
-          onClick={() => setError('')}
+          onClick={() => setError(ErrorType.None)}
         />
         {/* show only one message at a time */}
         {error}
